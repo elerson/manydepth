@@ -18,7 +18,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from tensorboardX import SummaryWriter
-from robust_loss_pytorch import AdaptiveLossFunction
+from manydepth.robust_loss_pytorch import AdaptiveLossFunction
 
 
 import json
@@ -511,7 +511,7 @@ class Trainer:
         """
         abs_diff = torch.abs(target - pred)
         l1_loss = abs_diff.mean(1, True)
-
+        print(pred.shape)
         if self.opt.no_ssim:
             reprojection_loss = l1_loss
         else:

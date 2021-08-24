@@ -26,7 +26,7 @@ from __future__ import print_function
 
 import numpy as np
 import torch
-from robust_loss_pytorch import util
+from manydepth.robust_loss_pytorch import util
 
 
 def lossfun(x, alpha, scale, approximate=False, epsilon=1e-6):

@@ -30,9 +30,9 @@ from pkg_resources import resource_stream
 import mpmath
 import numpy as np
 import torch
-from robust_loss_pytorch import cubic_spline
-from robust_loss_pytorch import general
-from robust_loss_pytorch import util
+from manydepth.robust_loss_pytorch import cubic_spline
+from manydepth.robust_loss_pytorch import general
+from manydepth.robust_loss_pytorch import util
 
 
 def analytical_base_partition_function(numer, denom):
