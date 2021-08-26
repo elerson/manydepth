@@ -316,9 +316,8 @@ class AdaptiveImageLossFunction(nn.Module):
     # Reshape `x` from
     #   (num_batches, width, height, num_channels) to
     #   (num_batches * num_channels, width, height)
-    _, num_channels, width, height = x.shape
-    #print(x.shape)
-    x_stack = torch.reshape(x, (-1, width, height))
+    _, width, height, num_channels = x.shape
+    x_stack = torch.reshape(x.permute(0, 3, 1, 2), (-1, width, height))
 
     # Turn each channel in `x_stack` into the spatial representation specified
     # by `representation`.
@@ -336,7 +335,7 @@ class AdaptiveImageLossFunction(nn.Module):
     #   (num_batches, num_channels * width * height)
     x_mat = torch.reshape(
         torch.reshape(x_stack,
-                      (-1, num_channels, width, height)),
+                      (-1, num_channels, width, height)).permute(0, 2, 3, 1),
         [-1, width * height * num_channels])
     return x_mat
 
@@ -346,7 +345,7 @@ class AdaptiveImageLossFunction(nn.Module):
                device,
                color_space='YUV',
                representation='CDF9/7',
-               wavelet_num_levels=5,
+               wavelet_num_levels=1,
                wavelet_scale_base=1,
                use_students_t=False,
                **kwargs):

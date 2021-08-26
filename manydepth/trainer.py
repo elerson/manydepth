@@ -170,7 +170,7 @@ class Trainer:
         self.backproject_depth = {}
         self.project_3d = {}
 
-        image_size = (3, self.opt.height, self.opt.width)
+        image_size = (self.opt.width, self.opt.height, 3)
 
         self.adaptive_image_loss_func = AdaptiveImageLossFunction(image_size, np.float32, 0, alpha_lo=0.001, alpha_hi=1.999, alpha_init=1.0, scale_lo=1.0, scale_init=1.0)
 
@@ -512,13 +512,12 @@ class Trainer:
                         inputs[("color", frame_id, source_scale)]
 
     def adaptive_loss(self, pred, target):
-        #x = target - pred        
-        #y = x.permute(0, 2, 3 ,1)
+        x = target - pred        
+        y = x.permute(0, 2, 3 ,1)
         #print(y.shape, x.shape)
-        #x = target - pred
-        #r = self.adaptive_image_loss_func.lossfun(target - pred)#.permute(0, 3, 2, 1)
-        return self.adaptive_image_loss_func.lossfun(target - pred)
-        #return r
+        r = self.adaptive_image_loss_func.lossfun(y).permute(0, 3, 2, 1)
+        #print(y.shape, x.shape, r.shape)
+        return r
 
     def compute_reprojection_loss(self, pred, target):
         """Computes reprojection loss between a batch of predicted and target images
