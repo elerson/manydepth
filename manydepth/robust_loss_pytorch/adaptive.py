@@ -317,7 +317,7 @@ class AdaptiveImageLossFunction(nn.Module):
     #   (num_batches, width, height, num_channels) to
     #   (num_batches * num_channels, width, height)
     _, num_channels, width, height = x.shape
-    print(x.shape)
+    #print(x.shape)
     x_stack = torch.reshape(x, (-1, width, height))
 
     # Turn each channel in `x_stack` into the spatial representation specified
