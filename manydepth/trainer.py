@@ -515,9 +515,9 @@ class Trainer:
         #x = target - pred        
         #y = x.permute(0, 2, 3 ,1)
         #print(y.shape, x.shape)
-        x = target - pred
-        r = self.adaptive_image_loss_func.lossfun(target - pred)#.permute(0, 3, 2, 1)
-        print( x.shape, r.shape)
+        #x = target - pred
+        #r = self.adaptive_image_loss_func.lossfun(target - pred)#.permute(0, 3, 2, 1)
+        return self.adaptive_image_loss_func.lossfun(target - pred)
         #return r
 
     def compute_reprojection_loss(self, pred, target):
