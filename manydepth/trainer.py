@@ -18,7 +18,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from tensorboardX import SummaryWriter
-from manydepth.robust_loss_pytorch import AdaptiveLossFunction
+from manydepth.robust_loss_pytorch import AdaptiveImageLossFunction
 
 
 import json
@@ -169,6 +169,11 @@ class Trainer:
 
         self.backproject_depth = {}
         self.project_3d = {}
+
+        image_size = (self.opt.width, self.opt.height, 3)
+
+        self.adaptive_image_loss_func = AdaptiveImageLossFunction(image_size, np.float3, self.device)
+
 
         for scale in self.opt.scales:
             h = self.opt.height // (2 ** scale)
@@ -506,12 +511,17 @@ class Trainer:
                     outputs[("color_identity", frame_id, scale)] = \
                         inputs[("color", frame_id, source_scale)]
 
+    def adaptive_loss(self, pred, target):
+        x = target - pred        
+        r = self.adaptive_image_loss_func.lossfun(x.permute(0, 3, 1, 2))
+        return r.permute(0, 2, 3 ,1)
+
     def compute_reprojection_loss(self, pred, target):
         """Computes reprojection loss between a batch of predicted and target images
         """
-        abs_diff = torch.abs(target - pred)
+        abs_diff = self.adaptive_loss(pred, target)#torch.abs(target - pred)
         l1_loss = abs_diff.mean(1, True)
-        print(pred.shape)
+       
         if self.opt.no_ssim:
             reprojection_loss = l1_loss
         else:
