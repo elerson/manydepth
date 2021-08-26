@@ -633,9 +633,9 @@ class Trainer:
                 consistency_mask = (1 - reprojection_loss_mask).float()
 
             # standard reprojection loss
-            #reprojection_loss = reprojection_loss * reprojection_loss_mask
-            #reprojection_loss = reprojection_loss.sum() / (reprojection_loss_mask.sum() + 1e-7)
-            reprojection_loss = reprojection_loss.mean()
+            reprojection_loss = reprojection_loss * reprojection_loss_mask
+            reprojection_loss = reprojection_loss.sum() / (reprojection_loss_mask.sum() + 1e-7)
+            #reprojection_loss = reprojection_loss.mean()
 
             # consistency loss:
             # encourage multi frame prediction to be like singe frame where masking is happening
