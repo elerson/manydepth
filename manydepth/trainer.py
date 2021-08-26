@@ -515,6 +515,8 @@ class Trainer:
         #x = target - pred        
         #y = x.permute(0, 2, 3 ,1)
         #print(y.shape, x.shape)
+        x = target - pred
+        print(x.shape)
         return  self.adaptive_image_loss_func.lossfun(target - pred)#.permute(0, 3, 2, 1)
         #print(y.shape, x.shape, r.shape)
         #return r
