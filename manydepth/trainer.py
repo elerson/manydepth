@@ -524,7 +524,7 @@ class Trainer:
     def compute_reprojection_loss(self, pred, target):
         """Computes reprojection loss between a batch of predicted and target images
         """
-        abs_diff = torch.abs(target - pred)#self.adaptive_loss(pred, target)#
+        abs_diff = self.adaptive_loss(pred, target)# torch.abs(target - pred)#
         l1_loss = abs_diff.mean(1, True)
         
         if self.opt.no_ssim:
