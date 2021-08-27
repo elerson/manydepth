@@ -456,7 +456,7 @@ class AdaptiveImageLossFunction(nn.Module):
     loss_mat = self.adaptive_lossfun.lossfun(x_mat)
 
     # Reshape the loss function's outputs to have the shapes as the input.
-    print('T', loss_mat.shape, self.image_size)
+    #print('T', loss_mat.shape, self.image_size)
     loss = torch.reshape(loss_mat, [-1] + list(self.image_size))
     return loss
 
