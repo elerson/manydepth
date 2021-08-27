@@ -170,17 +170,15 @@ class Trainer:
         self.backproject_depth = {}
         self.project_3d = {}
 
-        
+        image_size = (self.opt.width, self.opt.height, 3)
 
-        
+        self.adaptive_image_loss_func = AdaptiveImageLossFunction(image_size, np.float32, 0, alpha_lo=0.001, alpha_hi=1.999, alpha_init=1.9, scale_lo=1.0, scale_init=1.0)
 
-        self.adaptive_image_loss_func = {}
+
         for scale in self.opt.scales:
             h = self.opt.height // (2 ** scale)
             w = self.opt.width // (2 ** scale)
 
-            image_size = (w, h, 3)
-            self.adaptive_image_loss_func[scale] = AdaptiveImageLossFunction(image_size, np.float32, 0, alpha_lo=0.001, alpha_hi=1.999, alpha_init=1.9, scale_lo=1.0, scale_init=1.0)
             print('scale', scale)
 
             self.backproject_depth[scale] = BackprojectDepth(self.opt.batch_size, h, w)
@@ -515,18 +513,18 @@ class Trainer:
                     outputs[("color_identity", frame_id, scale)] = \
                         inputs[("color", frame_id, source_scale)]
 
-    def adaptive_loss(self, pred, target, scale):
+    def adaptive_loss(self, pred, target):
         x = target - pred        
         y = x.permute(0, 2, 3 ,1)
-        print(scale)
-        r = self.adaptive_image_loss_func[scale].lossfun(y).permute(0, 3, 2, 1)
+        #print(y.shape, x.shape)
+        r = self.adaptive_image_loss_func.lossfun(y).permute(0, 3, 2, 1)
         #print(y.shape, x.shape, r.shape)
         return r
 
-    def compute_reprojection_loss(self, pred, target, scale):
+    def compute_reprojection_loss(self, pred, target):
         """Computes reprojection loss between a batch of predicted and target images
         """
-        abs_diff = self.adaptive_loss(pred, target, scale)#torch.abs(target - pred)
+        abs_diff = self.adaptive_loss(pred, target)#torch.abs(target - pred)
         l1_loss = abs_diff.mean(1, True)
         
         if self.opt.no_ssim:
@@ -586,11 +584,9 @@ class Trainer:
             color = inputs[("color", 0, scale)]
             target = inputs[("color", 0, source_scale)]
 
-            print(color.shape)
-
             for frame_id in self.opt.frame_ids[1:]:
                 pred = outputs[("color", frame_id, scale)]
-                reprojection_losses.append(self.compute_reprojection_loss(pred, target, scale))
+                reprojection_losses.append(self.compute_reprojection_loss(pred, target))
             reprojection_losses = torch.cat(reprojection_losses, 1)
 
             if not self.opt.disable_automasking:
@@ -598,7 +594,7 @@ class Trainer:
                 for frame_id in self.opt.frame_ids[1:]:
                     pred = inputs[("color", frame_id, source_scale)]
                     identity_reprojection_losses.append(
-                        self.compute_reprojection_loss(pred, target, scale))
+                        self.compute_reprojection_loss(pred, target))
 
                 identity_reprojection_losses = torch.cat(identity_reprojection_losses, 1)
 
