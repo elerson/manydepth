@@ -170,7 +170,7 @@ class Trainer:
         self.backproject_depth = {}
         self.project_3d = {}
 
-        image_size = (3, self.opt.width, self.opt.height)
+        image_size = (3, self.opt.height, self.opt.width)
 
         self.adaptive_image_loss_func = AdaptiveImageLossFunction(image_size, np.float32, 0, alpha_lo=0.001, alpha_hi=1.999, alpha_init=1.9)
 
