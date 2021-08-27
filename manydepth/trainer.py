@@ -172,7 +172,7 @@ class Trainer:
 
         image_size = (self.opt.width, self.opt.height, 3)
 
-        self.adaptive_image_loss_func = AdaptiveImageLossFunction(image_size, np.float32, 0)
+        self.adaptive_image_loss_func = AdaptiveImageLossFunction(image_size, np.float32, 0, alpha_lo=0.001, alpha_hi=1.999, alpha_init=1.999, scale_lo=1.0, scale_init=1.0)
 
 
         for scale in self.opt.scales:
@@ -530,7 +530,7 @@ class Trainer:
             #print('teste')
         else:
             ssim_loss = self.ssim(pred, target).mean(1, True)
-            reprojection_loss = 0.85 * ssim_loss + 0.15 * l1_loss
+            reprojection_loss = 0.25 * ssim_loss + 0.75 * l1_loss
 
         return reprojection_loss
 
