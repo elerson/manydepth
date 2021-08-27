@@ -345,7 +345,7 @@ class AdaptiveImageLossFunction(nn.Module):
                device,
                color_space='YUV',
                representation='CDF9/7',
-               wavelet_num_levels=5,
+               wavelet_num_levels=1,
                wavelet_scale_base=1,
                use_students_t=False,
                **kwargs):
