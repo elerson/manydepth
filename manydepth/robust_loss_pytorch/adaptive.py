@@ -316,7 +316,7 @@ class AdaptiveImageLossFunction(nn.Module):
     # Reshape `x` from
     #   (num_batches, width, height, num_channels) to
     #   (num_batches * num_channels, width, height)
-    _, num_channels, width, height = x.shape
+    num_batches, num_channels, width, height = x.shape
     x_stack = torch.reshape(x, (-1, width, height))
 
     # Turn each channel in `x_stack` into the spatial representation specified
@@ -334,7 +334,7 @@ class AdaptiveImageLossFunction(nn.Module):
     #   (num_batches * num_channels, width, height) to
     #   (num_batches, num_channels * width * height)
     x_mat = torch.reshape(x_stack,
-        [-1, width * height * num_channels])
+        [width * height * num_channels * num_batches, 1])
     return x_mat
 
   def __init__(self,
@@ -425,7 +425,7 @@ class AdaptiveImageLossFunction(nn.Module):
 
     x_example = torch.zeros([1] + list(self.image_size)).type(self.float_dtype)
     x_example_mat = self.transform_to_mat(x_example)
-    self.num_dims = x_example_mat.shape[1]
+    self.num_dims = 1#x_example_mat.shape[1]
 
     if self.use_students_t:
       self.adaptive_lossfun = StudentsTLossFunction(self.num_dims,
