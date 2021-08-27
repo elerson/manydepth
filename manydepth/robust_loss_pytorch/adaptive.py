@@ -463,7 +463,7 @@ class AdaptiveImageLossFunction(nn.Module):
   def alpha(self):
     """Returns an image of alphas."""
     assert not self.use_students_t
-    return torch.reshape(self.adaptive_lossfun.alpha(), self.image_size)
+    #return torch.reshape(self.adaptive_lossfun.alpha(), self.image_size)
     return self.adaptive_lossfun.alpha()#torch.reshape(self.adaptive_lossfun.alpha(), self.image_size)
 
   def df(self):
