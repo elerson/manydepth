@@ -29,7 +29,7 @@ import torch
 from manydepth.robust_loss_pytorch import util
 
 
-def lossfun(x, alpha, scale, approximate=False, epsilon=1e-6):
+def lossfun(x, alpha, scale, approximate=True, epsilon=1e-6):
   r"""Implements the general form of the loss.
 
   This implements the rho(x, \alpha, c) function described in "A General and
