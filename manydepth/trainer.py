@@ -586,6 +586,8 @@ class Trainer:
             color = inputs[("color", 0, scale)]
             target = inputs[("color", 0, source_scale)]
 
+            print(color.shape)
+
             for frame_id in self.opt.frame_ids[1:]:
                 pred = outputs[("color", frame_id, scale)]
                 reprojection_losses.append(self.compute_reprojection_loss(pred, target, scale))
