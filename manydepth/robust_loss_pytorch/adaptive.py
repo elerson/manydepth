@@ -316,7 +316,7 @@ class AdaptiveImageLossFunction(nn.Module):
     # Reshape `x` from
     #   (num_batches, width, height, num_channels) to
     #   (num_batches * num_channels, width, height)
-    num_batches, num_channels, width, height = x.shape
+    _, num_channels, width, height = x.shape
     x_stack = torch.reshape(x, (-1, width, height))
 
     # Turn each channel in `x_stack` into the spatial representation specified
@@ -334,7 +334,7 @@ class AdaptiveImageLossFunction(nn.Module):
     #   (num_batches * num_channels, width, height) to
     #   (num_batches, num_channels * width * height)
     x_mat = torch.reshape(x_stack,
-        [width * height * num_channels * num_batches, 1])
+        [-1, width * height * num_channels])
     return x_mat
 
   def __init__(self,
@@ -343,7 +343,7 @@ class AdaptiveImageLossFunction(nn.Module):
                device,
                color_space='RGB',
                representation= 'PIXEL', #'CDF9/7',
-               wavelet_num_levels=1,
+               wavelet_num_levels=5,
                wavelet_scale_base=1,
                use_students_t=False,
                **kwargs):
@@ -425,7 +425,7 @@ class AdaptiveImageLossFunction(nn.Module):
 
     x_example = torch.zeros([1] + list(self.image_size)).type(self.float_dtype)
     x_example_mat = self.transform_to_mat(x_example)
-    self.num_dims = 1#x_example_mat.shape[1]
+    self.num_dims = x_example_mat.shape[1]
 
     if self.use_students_t:
       self.adaptive_lossfun = StudentsTLossFunction(self.num_dims,
@@ -463,8 +463,7 @@ class AdaptiveImageLossFunction(nn.Module):
   def alpha(self):
     """Returns an image of alphas."""
     assert not self.use_students_t
-    #return torch.reshape(self.adaptive_lossfun.alpha(), self.image_size)
-    return self.adaptive_lossfun.alpha()#torch.reshape(self.adaptive_lossfun.alpha(), self.image_size)
+    return torch.reshape(self.adaptive_lossfun.alpha(), self.image_size)
 
   def df(self):
     """Returns an image of degrees of freedom, for the Student's T model."""

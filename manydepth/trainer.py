@@ -18,7 +18,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from tensorboardX import SummaryWriter
-from manydepth.robust_loss_pytorch import AdaptiveImageLossFunction, AdaptiveLossFunction
+from manydepth.robust_loss_pytorch import AdaptiveImageLossFunction
 
 
 import json
@@ -122,7 +122,7 @@ class Trainer:
 
         image_size = (3, self.opt.height, self.opt.width)
         self.adaptive_image_loss_func = AdaptiveImageLossFunction(image_size, np.float32, 0, alpha_lo=0.001, alpha_hi=1.999, scale_lo=1.0, scale_init=1.0)
-        #self.adaptive_image_loss_func = AdaptiveLossFunction(1, np.float32, 0, alpha_lo=0.001, alpha_hi=1.999, scale_lo=1.0, scale_init=1.0)
+
 
 
         self.parameters_to_train += list(self.adaptive_image_loss_func.parameters())
@@ -759,14 +759,11 @@ class Trainer:
                 disp, self.step)
 
 
-            alpha = self.adaptive_image_loss_func.alpha()
-
-            writer.add_scalar("alpha", alpha, self.step)
+            disp = self.adaptive_image_loss_func.alpha()*127.0
             #print(disp)
-            #writer.add_image(
-            
-            #    "alpha/{}".format(j),
-            #    alpha, self.step)
+            writer.add_image(
+                "alpha/{}".format(j),
+                disp, self.step)
 
 
             if outputs.get("lowest_cost") is not None:
