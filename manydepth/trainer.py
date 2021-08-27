@@ -525,6 +525,8 @@ class Trainer:
         """Computes reprojection loss between a batch of predicted and target images
         """
         abs_diff = self.adaptive_loss(pred, target)# torch.abs(target - pred)#
+        print(abs_diff['latent_alpha'])
+
         #print(abs_diff.shape, pred.shape)
         l1_loss = abs_diff.mean(1, True)
         
@@ -664,9 +666,9 @@ class Trainer:
 
             mean_disp = disp.mean(2, True).mean(3, True)
             norm_disp = disp / (mean_disp + 1e-7)
-            #smooth_loss = get_smooth_loss(norm_disp, color)
+            smooth_loss = get_smooth_loss(norm_disp, color)
 
-            #loss += self.opt.disparity_smoothness * smooth_loss / (2 ** scale)
+            loss += self.opt.disparity_smoothness * smooth_loss / (2 ** scale)
             total_loss += loss
             losses["loss/{}".format(scale)] = loss
 
