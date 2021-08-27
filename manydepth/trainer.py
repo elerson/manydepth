@@ -117,6 +117,16 @@ class Trainer:
             self.parameters_to_train += list(self.models["pose_encoder"].parameters())
             self.parameters_to_train += list(self.models["pose"].parameters())
 
+
+
+
+        image_size = (3, self.opt.height, self.opt.width)
+        self.adaptive_image_loss_func = AdaptiveImageLossFunction(image_size, np.float32, 0, alpha_lo=0.001, alpha_hi=1.999, alpha_init=1.9)
+
+
+
+        self.parameters_to_train += list(self.adaptive_image_loss_func.parameters())
+
         self.model_optimizer = optim.Adam(self.parameters_to_train, self.opt.learning_rate)
         self.model_lr_scheduler = optim.lr_scheduler.StepLR(
             self.model_optimizer, self.opt.scheduler_step_size, 0.1)
@@ -170,9 +180,6 @@ class Trainer:
         self.backproject_depth = {}
         self.project_3d = {}
 
-        image_size = (3, self.opt.height, self.opt.width)
-
-        self.adaptive_image_loss_func = AdaptiveImageLossFunction(image_size, np.float32, 0, alpha_lo=0.001, alpha_hi=1.999, alpha_init=1.9)
 
 
         for scale in self.opt.scales:
@@ -752,7 +759,7 @@ class Trainer:
                 disp, self.step)
 
 
-            disp = self.adaptive_image_loss_func.alpha()
+            disp = self.adaptive_image_loss_func.alpha()*127.0
             print(disp)
             writer.add_image(
                 "alpha/{}".format(j),
