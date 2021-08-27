@@ -121,8 +121,8 @@ class Trainer:
 
 
         image_size = (3, self.opt.height, self.opt.width)
-        #self.adaptive_image_loss_func = AdaptiveImageLossFunction(image_size, np.float32, 0, alpha_lo=0.001, alpha_hi=1.999, scale_lo=1.0, scale_init=1.0)
-        self.adaptive_image_loss_func = AdaptiveLossFunction(1, np.float32, 0, alpha_lo=0.001, alpha_hi=1.999, scale_lo=1.0, scale_init=1.0)
+        self.adaptive_image_loss_func = AdaptiveImageLossFunction(image_size, np.float32, 0, alpha_lo=0.001, alpha_hi=1.999, scale_lo=1.0, scale_init=1.0)
+        #self.adaptive_image_loss_func = AdaptiveLossFunction(1, np.float32, 0, alpha_lo=0.001, alpha_hi=1.999, scale_lo=1.0, scale_init=1.0)
 
 
         self.parameters_to_train += list(self.adaptive_image_loss_func.parameters())
@@ -761,11 +761,11 @@ class Trainer:
 
             alpha = self.adaptive_image_loss_func.alpha()
 
-            writer.add_scalar("alpha", alpha, self.step)
+            #writer.add_scalar("alpha", alpha, self.step)
             #print(disp)
-            #writer.add_image(
-            #    "alpha/{}".format(j),
-            #    disp, self.step)
+            writer.add_image(
+                "alpha/{}".format(j),
+                alpha, self.step)
 
 
             if outputs.get("lowest_cost") is not None:
