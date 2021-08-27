@@ -761,11 +761,12 @@ class Trainer:
 
             alpha = self.adaptive_image_loss_func.alpha()
 
-            #writer.add_scalar("alpha", alpha, self.step)
+            writer.add_scalar("alpha", alpha, self.step)
             #print(disp)
-            writer.add_image(
-                "alpha/{}".format(j),
-                alpha, self.step)
+            #writer.add_image(
+            
+            #    "alpha/{}".format(j),
+            #    alpha, self.step)
 
 
             if outputs.get("lowest_cost") is not None:
