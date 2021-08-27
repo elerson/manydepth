@@ -525,7 +525,7 @@ class Trainer:
         """Computes reprojection loss between a batch of predicted and target images
         """
         abs_diff = self.adaptive_loss(pred, target)# torch.abs(target - pred)#
-        print(self.adaptive_image_loss_func.alpha())
+        #print(self.adaptive_image_loss_func.alpha())
 
         #print(abs_diff.shape, pred.shape)
         l1_loss = abs_diff.mean(1, True)
@@ -749,6 +749,13 @@ class Trainer:
             writer.add_image(
                 "disp_mono/{}".format(j),
                 disp, self.step)
+
+
+            disp = self.adaptive_image_loss_func.alpha()
+            writer.add_image(
+                "alpha/{}".format(j),
+                disp, self.step)
+
 
             if outputs.get("lowest_cost") is not None:
                 lowest_cost = outputs["lowest_cost"][j]
