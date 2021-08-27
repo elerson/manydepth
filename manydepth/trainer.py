@@ -751,7 +751,7 @@ class Trainer:
                 disp, self.step)
 
 
-            disp = self.adaptive_image_loss_func.alpha()
+            disp = self.adaptive_image_loss_func.alpha()*127
             writer.add_image(
                 "alpha/{}".format(j),
                 disp, self.step)
