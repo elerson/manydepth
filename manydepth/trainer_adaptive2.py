@@ -529,8 +529,8 @@ class Trainer:
         #print(y.shape, x.shape, r.shape)
         #return r
 
-    def compute_reprojection_loss_adptive(self, pred, target): 
-       abs_diff self.adaptive_loss(pred, target)
+    def compute_reprojection_loss_adaptive(self, pred, target): 
+       abs_diff = self.adaptive_loss(pred, target)
        return abs_diff.mean(1, True)
 
     def compute_reprojection_loss(self, pred, target):
@@ -603,7 +603,7 @@ class Trainer:
             for frame_id in self.opt.frame_ids[1:]:
                 pred = outputs[("color", frame_id, scale)]
                 reprojection_losses.append(self.compute_reprojection_loss(pred, target))
-                reprojection_losses_adaptive.append(self.compute_reprojection_loss_adptive(pred, target))
+                reprojection_losses_adaptive.append(self.compute_reprojection_loss_adaptive(pred, target))
             reprojection_losses = torch.cat(reprojection_losses, 1)
             reprojection_losses_adaptive = torch.cat(reprojection_losses_adaptive, 1)
 
@@ -677,7 +677,7 @@ class Trainer:
 
             losses['reproj_loss/{}'.format(scale)] = reprojection_loss
 
-            loss += reprojection_loss + consistency_loss + reprojection_losses_adaptive
+            loss += reprojection_loss*0.5 + consistency_loss + reprojection_losses_adaptive*0.5
 
             mean_disp = disp.mean(2, True).mean(3, True)
             norm_disp = disp / (mean_disp + 1e-7)
