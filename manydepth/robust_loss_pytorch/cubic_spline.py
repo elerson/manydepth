@@ -100,11 +100,12 @@ def interpolate1d(x, values, tangents):
 
 def cubicInterpolate (x, values):
   p0, p1, p2, p3 = values
-  a = 0.5 * (-p0 + 3.0 * p1 - 3.0 * p2 + p3)
-  b = 0.5 * (2.0 * p0 - 5.0 * p1 + 4.0 * p2 - p3)
-  c = 0.5 * (-p0 + p2)
+  a = torch.as_tensor(0.5) * (-p0 + torch.as_tensor(3.0) * p1 - torch.as_tensor(3.0) * p2 + p3)
+  b = torch.as_tensor(0.5) * (torch.as_tensor(2.0) * p0 - torch.as_tensor(5.0) * p1 + torch.as_tensor(4.0) * p2 - p3)
+  c = torch.as_tensor(0.5) * (-p0 + p2)
   d = p1
   return d + x * (c + x * (b + x * a))
+
   
 
 def interpolate2d(x, y, values):
@@ -170,6 +171,6 @@ def interpolate2d(x, y, values):
   r3 = cubicInterpolate(s, (values[x_lo+2][y_lo-1], values[x_lo+2][y_lo], values[x_lo+2][y_lo+1], values[x_lo+2][y_lo+2]))
  
 
-  return r0#torch.Tensor(cubicInterpolate(t, (r0, r1, r2, r3)))
+  return cubicInterpolate(t, (r0, r1, r2, r3))
 
 
