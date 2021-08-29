@@ -121,7 +121,7 @@ class Trainer:
 
 
         image_size = (3, self.opt.height, self.opt.width)
-        self.adaptive_image_loss_func = AdaptiveImageLossFunction(image_size, np.float32, 0, color_space='YUV', representation= 'CDF9/7', alpha_lo=0.001, alpha_hi=1.999, scale_lo=1.0, scale_init=1.0)
+        self.adaptive_image_loss_func = AdaptiveImageLossFunction(image_size, np.float32, 0, color_space='YUV', alpha_lo=0.001, alpha_hi=1.999, scale_lo=1.0, scale_init=1.0)
 
 
 
