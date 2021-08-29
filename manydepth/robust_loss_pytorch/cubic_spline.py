@@ -170,6 +170,6 @@ def interpolate2d(x, y, values):
   r3 = cubicInterpolate(s, (values[x_lo+2][y_lo-1], values[x_lo+2][y_lo], values[x_lo+2][y_lo+1], values[x_lo+2][y_lo+2]))
  
 
-  return torch.Tensor(cubicInterpolate(t, (r0, r1, r2, r3)))
+  return r0#torch.Tensor(cubicInterpolate(t, (r0, r1, r2, r3)))
 
 
