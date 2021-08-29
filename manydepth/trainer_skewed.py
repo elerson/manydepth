@@ -759,11 +759,18 @@ class Trainer:
                 disp, self.step)
 
 
-            disp = self.adaptive_image_loss_func.alpha()*127.0
+            disp = self.adaptive_image_loss_func.beta()*127.0
+            #print(disp)
+            writer.add_image(
+                "beta/{}".format(j),
+                disp, self.step)
+                
+            disp = (self.adaptive_image_loss_func.alpha()+10)*12.0
             #print(disp)
             writer.add_image(
                 "alpha/{}".format(j),
                 disp, self.step)
+
 
 
             if outputs.get("lowest_cost") is not None:
