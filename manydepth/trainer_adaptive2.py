@@ -543,7 +543,7 @@ class Trainer:
             #print('teste')
         else:
             ssim_loss = self.ssim(pred, target).mean(1, True)
-            reprojection_loss = 0.5 * ssim_loss + 0.5 * l1_loss
+            reprojection_loss = 0.2 * ssim_loss + 0.8 * l1_loss
 
         return reprojection_loss
 
