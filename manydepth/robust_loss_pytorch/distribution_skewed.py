@@ -113,7 +113,7 @@ class DistributionSkewed():
     
 
     new_x = (x*alpha-self.x_min)*self.L
-    new_x = torch.flatten(new_x)
+    #new_x = torch.flatten(new_x)
     
     alpha = torch.as_tensor(alpha)
     beta = (torch.as_tensor(beta)-self.b_min)*self.Lb
