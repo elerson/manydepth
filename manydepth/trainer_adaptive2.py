@@ -536,7 +536,7 @@ class Trainer:
     def compute_reprojection_loss(self, pred, target):
         """Computes reprojection loss between a batch of predicted and target images
         """
-        abs_diff = torch.abs(target - pred)# 
+        abs_diff = self.adaptive_loss(pred, target)#torch.abs(target - pred)# 
         #print(self.adaptive_image_loss_func.alpha())
 
         #print(abs_diff.shape, pred.shape)
@@ -547,7 +547,7 @@ class Trainer:
             #print('teste')
         else:
             ssim_loss = self.ssim(pred, target).mean(1, True)
-            reprojection_loss = 0.85 * ssim_loss + 0.15 * l1_loss
+            reprojection_loss = 0.5 * ssim_loss + 0.5 * l1_loss
 
         return reprojection_loss
 
@@ -603,9 +603,8 @@ class Trainer:
             for frame_id in self.opt.frame_ids[1:]:
                 pred = outputs[("color", frame_id, scale)]
                 reprojection_losses.append(self.compute_reprojection_loss(pred, target))
-                reprojection_losses_adaptive.append(self.compute_reprojection_loss_adaptive(pred, target))
             reprojection_losses = torch.cat(reprojection_losses, 1)
-            reprojection_losses_adaptive = torch.cat(reprojection_losses_adaptive, 1)
+
 
             if not self.opt.disable_automasking:
                 identity_reprojection_losses = []
@@ -677,7 +676,7 @@ class Trainer:
 
             losses['reproj_loss/{}'.format(scale)] = reprojection_loss
 
-            loss += reprojection_loss*0.5 + consistency_loss + reprojection_losses_adaptive*0.5
+            loss += reprojection_loss + consistency_loss
 
             mean_disp = disp.mean(2, True).mean(3, True)
             norm_disp = disp / (mean_disp + 1e-7)
