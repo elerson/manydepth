@@ -682,7 +682,6 @@ class Trainer:
 
         total_loss /= self.num_scales
         losses["loss"] = total_loss
-        losses["alpha"] = self.adaptive_image_loss_func.alpha()
 
         return losses
 
@@ -766,11 +765,11 @@ class Trainer:
                 "beta/{}".format(j),
                 disp, self.step)
                 
-            #disp = (self.adaptive_image_loss_func.alpha()+10)*12.0
+            disp = (self.adaptive_image_loss_func.alpha()+1.5)*(256./3)
             #print(disp)
-            #writer.add_image(
-            #    "alpha/{}".format(j),
-            #    disp, self.step)
+            writer.add_image(
+                "alpha/{}".format(j),
+                disp, self.step)
 
 
 

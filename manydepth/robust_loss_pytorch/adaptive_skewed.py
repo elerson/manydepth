@@ -509,7 +509,8 @@ class AdaptiveImageLossFunction(nn.Module):
   def alpha(self):
     """Returns an image of betas."""
     assert not self.use_students_t
-    return self.adaptive_lossfun.alpha()
+    #return self.adaptive_lossfun.alpha()
+    return torch.reshape(self.adaptive_lossfun.alpha(), self.image_size)
     
   def beta(self):
     """Returns an image of betas."""
