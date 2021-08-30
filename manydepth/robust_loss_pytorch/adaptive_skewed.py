@@ -199,7 +199,7 @@ class AdaptiveLossFunction(nn.Module):
               latent_alpha_init.clone().detach().to(
                   dtype=self.float_dtype,
                   device=self.device)[np.newaxis, np.newaxis].repeat(
-                      1, self.num_dims),
+                      1, 1),
               requires_grad=True))
       self.alpha = lambda: util.affine_sigmoid(
           self.latent_alpha, lo=alpha_lo, hi=alpha_hi)
