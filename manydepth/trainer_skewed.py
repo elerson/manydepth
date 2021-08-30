@@ -682,6 +682,7 @@ class Trainer:
 
         total_loss /= self.num_scales
         losses["loss"] = total_loss
+        losses["alpha"] = self.adaptive_image_loss_func.alpha()
 
         return losses
 
@@ -737,6 +738,7 @@ class Trainer:
         for l, v in losses.items():
             writer.add_scalar("{}".format(l), v, self.step)
 
+
         for j in range(min(4, self.opt.batch_size)):  # write a maxmimum of four images
             s = 0  # log only max scale
             for frame_id in self.opt.frame_ids:
@@ -765,11 +767,11 @@ class Trainer:
                 "beta/{}".format(j),
                 disp, self.step)
                 
-            disp = (self.adaptive_image_loss_func.alpha()+10)*12.0
+            #disp = (self.adaptive_image_loss_func.alpha()+10)*12.0
             #print(disp)
-            writer.add_image(
-                "alpha/{}".format(j),
-                disp, self.step)
+            #writer.add_image(
+            #    "alpha/{}".format(j),
+            #    disp, self.step)
 
 
 
