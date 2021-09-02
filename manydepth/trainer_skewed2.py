@@ -532,7 +532,7 @@ class Trainer:
     def compute_reprojection_loss(self, pred, target):
         """Computes reprojection loss between a batch of predicted and target images
         """
-        abs_diff = self.adaptive_loss(pred, target)# torch.abs(target - pred)#
+        abs_diff = torch.abs(target - pred)# self.adaptive_loss(pred, target)
         #print(self.adaptive_image_loss_func.alpha())
 
         #print(abs_diff.shape, pred.shape)
@@ -646,8 +646,8 @@ class Trainer:
                 consistency_mask = (1 - reprojection_loss_mask).float()
 
             # standard reprojection loss
-            reprojection_loss = reprojection_loss * reprojection_loss_mask
-            reprojection_loss = reprojection_loss.sum() / (reprojection_loss_mask.sum() + 1e-7)
+            reprojection_loss = reprojection_loss #* reprojection_loss_mask
+            reprojection_loss = reprojection_loss.mean()# / (reprojection_loss_mask.sum() + 1e-7)
             #reprojection_loss = reprojection_loss.mean()
 
             # consistency loss:
@@ -656,7 +656,7 @@ class Trainer:
                 multi_depth = outputs[("depth", 0, scale)]
                 # no gradients for mono prediction!
                 mono_depth = outputs[("mono_depth", 0, scale)].detach()
-                consistency_loss = torch.abs(multi_depth - mono_depth) * consistency_mask
+                consistency_loss = self.adaptive_loss(multi_depth, mono_depth) # * consistency_mask
                 consistency_loss = consistency_loss.mean()
 
                 # save for logging to tensorboard

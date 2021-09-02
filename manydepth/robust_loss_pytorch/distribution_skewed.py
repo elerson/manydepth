@@ -264,7 +264,7 @@ class DistributionSkewed():
           torch.tensor(0., dtype=cauchy_sample.dtype),
           torch.tensor(0., dtype=cauchy_sample.dtype),
           torch.tensor(1., dtype=cauchy_sample.dtype),
-          approximate=False) + self.log_base_partition_function(beta) -torch.log(self.Z_integral(cauchy_sample, alpha, beta)) 
+          approximate=False) + self.log_base_partition_function(beta) + self.Z_integral(cauchy_sample, alpha, beta)
 
       # Draw N samples from a uniform distribution, and use each uniform sample
       # to decide whether or not to accept each proposal sample.
