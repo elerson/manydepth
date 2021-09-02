@@ -120,7 +120,7 @@ class Trainer:
 
 
 
-        image_size = (3, self.opt.height, self.opt.width)
+        image_size = (1, self.opt.height, self.opt.width)
         self.adaptive_image_loss_func = AdaptiveImageLossFunctionSkewed(image_size, np.float32, 0, beta_lo=0.001, beta_hi=1.999, scale_lo=1.0, scale_init=1.0)
 
 
@@ -532,7 +532,7 @@ class Trainer:
     def compute_reprojection_loss(self, pred, target):
         """Computes reprojection loss between a batch of predicted and target images
         """
-        abs_diff = torch.abs(target - pred) # self.adaptive_loss(pred, target)#
+        abs_diff = torch.abs(target - pred)# self.adaptive_loss(pred, target)
         #print(self.adaptive_image_loss_func.alpha())
 
         #print(abs_diff.shape, pred.shape)
@@ -543,7 +543,7 @@ class Trainer:
             #print('teste')
         else:
             ssim_loss = self.ssim(pred, target).mean(1, True)
-            reprojection_loss = 0.5 * ssim_loss + 0.5 * l1_loss
+            reprojection_loss = 0.2 * ssim_loss + 0.8 * l1_loss
 
         return reprojection_loss
 
@@ -646,8 +646,8 @@ class Trainer:
                 consistency_mask = (1 - reprojection_loss_mask).float()
 
             # standard reprojection loss
-            reprojection_loss = reprojection_loss * reprojection_loss_mask
-            reprojection_loss = reprojection_loss.sum() / (reprojection_loss_mask.sum() + 1e-7)
+            reprojection_loss = reprojection_loss #* reprojection_loss_mask
+            reprojection_loss = reprojection_loss.mean()# / (reprojection_loss_mask.sum() + 1e-7)
             #reprojection_loss = reprojection_loss.mean()
 
             # consistency loss:
@@ -656,7 +656,7 @@ class Trainer:
                 multi_depth = outputs[("depth", 0, scale)]
                 # no gradients for mono prediction!
                 mono_depth = outputs[("mono_depth", 0, scale)].detach()
-                consistency_loss = torch.abs(multi_depth - mono_depth) * consistency_mask
+                consistency_loss = self.adaptive_loss(multi_depth, mono_depth) # * consistency_mask
                 consistency_loss = consistency_loss.mean()
 
                 # save for logging to tensorboard
@@ -682,7 +682,6 @@ class Trainer:
 
         total_loss /= self.num_scales
         losses["loss"] = total_loss
-        #losses["alpha"] = self.adaptive_image_loss_func.alpha()
 
         return losses
 
@@ -737,7 +736,6 @@ class Trainer:
         writer = self.writers[mode]
         for l, v in losses.items():
             writer.add_scalar("{}".format(l), v, self.step)
-
 
         for j in range(min(4, self.opt.batch_size)):  # write a maxmimum of four images
             s = 0  # log only max scale
