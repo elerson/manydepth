@@ -121,7 +121,7 @@ class Trainer:
 
 
         image_size = (1, self.opt.height, self.opt.width)
-        self.adaptive_image_loss_func = AdaptiveImageLossFunctionSkewed(image_size, np.float32, 0, beta_lo=0.001, beta_hi=1.999, scale_lo=1.0, scale_init=1.0)
+        self.adaptive_image_loss_func = AdaptiveImageLossFunctionSkewed(image_size, np.float32, 0, representation='CDF9/7', beta_lo=0.001, beta_hi=1.999, scale_lo=1.0, scale_init=1.0)
 
 
 
